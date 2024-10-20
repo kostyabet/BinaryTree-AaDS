@@ -166,6 +166,7 @@
             DeleteButton.TabIndex = 8;
             DeleteButton.Text = "Удалить элемент";
             DeleteButton.UseVisualStyleBackColor = true;
+            DeleteButton.Click += DeleteButton_Click;
             // 
             // MainForm
             // 

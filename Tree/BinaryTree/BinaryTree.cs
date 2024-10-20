@@ -1,4 +1,6 @@
-﻿namespace Tree.BinaryTree;
+﻿using System.Xml.Linq;
+
+namespace Tree.BinaryTree;
 public class BinaryTree
 {
 	public Tree.TreeNode.TreeNode? _root = null;
@@ -27,6 +29,63 @@ public class BinaryTree
         {
             Insert(value);
         }
+    }
+    public void Delete(int value)
+    {
+        deleteNode(value, _root);
+    }
+    public void DeleteRange(params int[] values)
+    {
+        foreach (var value in values)
+        {
+            Delete(value);
+        }
+    }
+    private Tree.TreeNode.TreeNode? deleteNode(int value, Tree.TreeNode.TreeNode? node)
+    {
+        if (node == null) return null;
+        
+
+        if (value < node.Value)
+        {
+            node.Left = deleteNode(value, node.Left);
+        }
+        else if (value > node.Value)
+        {
+            node.Right = deleteNode(value, node.Right);
+        }
+        else
+        {
+            if (node.Left == null && node.Right == null)
+            {
+                return null;
+            }
+            else if (node.Left == null)
+            {
+                return node.Right;
+            }
+            else if (node.Right == null)
+            {
+
+                return node.Left;
+            }
+            else
+            {
+                Tree.TreeNode.TreeNode successor = findMin(node.Right);
+                node.Value = successor.Value;
+                node.Right = deleteNode(successor.Value, node.Right);
+            }
+        }
+        return node;
+    }
+    private Tree.TreeNode.TreeNode findMin(Tree.TreeNode.TreeNode root)
+    {
+        if (root.Left != null)
+        {
+            root = root.Left;
+        }
+
+        return root;
     }
     public async Task ABR(Tree.TreeNode.TreeNode? node, Panel panel)
     {

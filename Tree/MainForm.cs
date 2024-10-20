@@ -54,5 +54,12 @@ namespace Tree
             tree.threadTree();
             panel.Invalidate();
         }
+
+        private void DeleteButton_Click(object sender, EventArgs e)
+        {
+            DeleteItemForm createDeleteItemForm = new DeleteItemForm(tree);
+            createDeleteItemForm.ShowDialog();
+            panel.Invalidate();
+        }
     }
 }
