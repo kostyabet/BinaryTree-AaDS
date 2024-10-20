@@ -1,0 +1,219 @@
+﻿namespace Tree.BinaryTree;
+public class BinaryTree
+{
+	public Tree.TreeNode.TreeNode? _root = null;
+    public string ABR_result { get; set; }
+    public string ARB_result { get; set; }
+    public string RAB_result { get; set; }
+    public BinaryTree() {
+        ABR_result = string.Empty;
+        ARB_result = string.Empty;
+        RAB_result = string.Empty;
+    }
+    public void Insert(int value)
+	{
+        if (_root == null)
+        {
+            _root = new Tree.TreeNode.TreeNode(value);
+        }
+        else
+        {
+            InsertValue(value, _root);
+        }
+    }
+    public void InsertRange(params int[] values)
+    {
+        foreach (var value in values)
+        {
+            Insert(value);
+        }
+    }
+    public async Task ABR(Tree.TreeNode.TreeNode? node, Panel panel)
+    {
+        if (node == null)
+        {
+
+            ABR_result += "N ";
+            return;
+        }
+        ABR_result += node.Value + " ";
+        Brush Cur1 = node.backgroundColor;
+        node.backgroundColor = Cur1 == Brushes.PaleGreen ? Brushes.PaleVioletRed : Brushes.LightPink;
+        panel.Invalidate();
+        await WaitForColorChange(panel, 1000);
+        node.backgroundColor = Cur1;
+        panel.Invalidate();
+        await ABR(node.Left, panel);
+        ABR_result += node.Value + " ";
+        Brush Cur2 = node.backgroundColor;
+        node.backgroundColor = Cur2 == Brushes.PaleGreen ? Brushes.PaleVioletRed : Brushes.LightPink;
+        panel.Invalidate();
+        await WaitForColorChange(panel, 1000);
+        node.backgroundColor = Cur2;
+        await ABR(node.Right, panel);
+        ABR_result += "(" + node.Value + ") ";
+        node.backgroundColor = Brushes.LightPink;
+        panel.Invalidate();
+        await WaitForColorChange(panel, 1000);
+        node.backgroundColor = Brushes.PaleGreen;
+        panel.Invalidate();
+    }
+    public async Task ARB(Tree.TreeNode.TreeNode? node, Panel panel)
+    {
+        if (node == null)
+        {
+            ARB_result += "N ";
+            return;
+        }
+
+        ARB_result += node.Value + " ";
+        Brush Cur1 = node.backgroundColor;
+        node.backgroundColor = Cur1 == Brushes.PaleGreen ? Brushes.PaleVioletRed : Brushes.LightPink;
+        panel.Invalidate();
+        await WaitForColorChange(panel, 1000);
+        node.backgroundColor = Cur1;
+        panel.Invalidate();
+        await ARB(node.Left, panel);
+        ARB_result += "(" + node.Value + ") ";
+        node.backgroundColor = Brushes.LightPink;
+        panel.Invalidate();
+        await WaitForColorChange(panel, 1000);
+        node.backgroundColor = Brushes.PaleGreen;
+        await ARB(node.Right, panel);
+        ARB_result += node.Value + " ";
+        Brush Cur2 = node.backgroundColor;
+        node.backgroundColor = Cur2 == Brushes.PaleGreen ? Brushes.PaleVioletRed : Brushes.LightPink;
+        panel.Invalidate();
+        await WaitForColorChange(panel, 1000);
+        node.backgroundColor = Cur2;
+        panel.Invalidate();
+    }
+    public async Task RAB(Tree.TreeNode.TreeNode? node, Panel panel)
+    {
+        if (node == null)
+        {
+            RAB_result += "N ";
+            return;
+        }
+        RAB_result += "(" + node.Value + ") ";
+        node.backgroundColor = Brushes.LightPink;
+        panel.Invalidate();
+        await WaitForColorChange(panel, 1000);
+        node.backgroundColor = Brushes.PaleGreen;
+        panel.Invalidate();
+        await RAB(node.Left, panel);
+        RAB_result += node.Value + " ";
+        Brush Cur1 = node.backgroundColor;
+        node.backgroundColor = Cur1 == Brushes.PaleGreen ? Brushes.PaleVioletRed : Brushes.LightPink;
+        panel.Invalidate();
+        await WaitForColorChange(panel, 1000);
+        node.backgroundColor = Cur1;
+        await RAB(node.Right, panel);
+        RAB_result += node.Value + " ";
+        Brush Cur2 = node.backgroundColor;
+        node.backgroundColor = Cur2 == Brushes.PaleGreen ? Brushes.PaleVioletRed : Brushes.LightPink;
+        panel.Invalidate();
+        await WaitForColorChange(panel, 1000);
+        node.backgroundColor = Cur2;
+        panel.Invalidate();
+    }
+    public void ResetColors(Tree.TreeNode.TreeNode? node, Panel panel)
+    {
+        if (node == null)
+        {
+            return;
+        }
+        node.backgroundColor = Brushes.LightBlue;
+        panel.Invalidate();
+        ResetColors(node.Left, panel);
+        node.backgroundColor = Brushes.LightBlue;
+        panel.Invalidate();
+        ResetColors(node.Right, panel);
+        node.backgroundColor = Brushes.LightBlue;
+        panel.Invalidate();
+    }
+
+    public void threadTree()
+    {
+        Tree.TreeNode.TreeNode? tempNode = null;
+        ARBtemp(_root);
+        void ARBtemp(Tree.TreeNode.TreeNode? node)
+        {
+            if (node == null)
+            {
+                return;
+            }
+            ARBtemp(node.Left);
+            if (node.Right == null)
+            {
+                tempNode = node;
+            }
+            else if (tempNode != null) {
+                tempNode.isThread = true;
+                tempNode.threadLink = node;
+            }
+            ARBtemp(node.Right);
+        }
+    }
+
+    public void DrawTree(Graphics g, int x)
+    {
+        DrawNodeTree(g, _root, x, 20, 210);
+    }
+
+    private void DrawNodeTree(Graphics g, Tree.TreeNode.TreeNode node, int x, int y, int offset)
+    {
+        if (node == null) return;
+        g.FillEllipse(node.backgroundColor, x, y, 30, 30);
+        g.DrawEllipse(node.borderColor, x, y, 30, 30);
+        g.DrawString(node.Value.ToString(), new Font("Arial", 8), node.textColor, x + 3, y + 7);
+        if (node.Left != null)
+        {
+            g.DrawLine(node.borderColor, x + 15, y + 30, x - offset + 15, y + 70);
+            DrawNodeTree(g, node.Left, x - offset, y + 70, offset / 2);
+        }
+        if (node.Right != null)
+        {
+            g.DrawLine(node.borderColor, x + 15, y + 30, x + offset + 15, y + 70);
+            DrawNodeTree(g, node.Right, x + offset, y + 70, offset / 2);
+        }
+    }
+    private void InsertValue(int value, Tree.TreeNode.TreeNode node)
+    {
+        if (node.Value < value)
+        {
+            if (node.Right == null)
+            {
+                node.Right = new Tree.TreeNode.TreeNode(value);
+            }
+            else
+            {
+                InsertValue(value, node.Right);
+            }
+        }
+        else if (node.Value > value)
+        {
+            if (node.Left == null)
+            {
+                node.Left = new Tree.TreeNode.TreeNode(value);
+            }
+            else
+            {
+                InsertValue(value, node.Left);
+            }
+        }
+    }
+    private Task WaitForColorChange(Panel panel, int milliseconds)
+    {
+        var tcs = new TaskCompletionSource<bool>();
+        var timer = new System.Timers.Timer(milliseconds);
+        timer.Elapsed += (s, e) =>
+        {
+            timer.Stop();
+            tcs.SetResult(true);
+        };
+        timer.AutoReset = false;
+        timer.Start();
+        return tcs.Task;
+    }
+}
