@@ -9,11 +9,13 @@ public class BinaryTree
     public string RAB_result { get; set; }
     public string threadedNodes { get; set; }
     public int X { get; set; }
+    public int VertOffset { get; set; }
     public BinaryTree() {
         ABR_result = string.Empty;
         ARB_result = string.Empty;
         RAB_result = string.Empty;
         threadedNodes = string.Empty;
+        VertOffset = 3;
     }
     public void Insert(int value)
 	{
@@ -252,7 +254,29 @@ public class BinaryTree
         else if (node.isThread)
         {
             int[] coords = NodeCoords(node.threadLink.Value, X, 20, 210);
-            g.DrawLine(node.borderColor, x + 15, y + 30, coords[0], coords[1]);
+            g.DrawLine(Pens.Red, x + 18, y + 30, x + 18, y + 30 + VertOffset);
+            int xTemp, yTemp;
+            xTemp = x > coords[0] ? coords[0] + 3 : coords[0] - 3;
+            g.DrawLine(Pens.Red, x + 18, y + 30 + VertOffset, xTemp, y + 30 + VertOffset);
+            g.DrawLine(Pens.Red, xTemp, y + 30 + VertOffset, xTemp, coords[1]);
+            Thread.Sleep(1000);
+            VertOffset += 3;
+        }
+    }
+    public void ResetThreadStatus()
+    {
+        ResetThread(_root);
+        void ResetThread(Tree.TreeNode.TreeNode? node)
+        {
+            if (node == null) return;
+            node.isThread = false;
+            node.threadLink = null;
+            ResetThread(node.Left);
+            node.isThread = false;
+            node.threadLink = null;
+            ResetThread(node.Right);
+            node.isThread = false;
+            node.threadLink = null;
         }
     }
     private int[] NodeCoords(int value, int x, int y, int offset)

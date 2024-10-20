@@ -32,6 +32,7 @@ namespace Tree
                 }
                 catch { }
             }
+            tree.ResetThreadStatus();
             tree.DeleteRange(deleteNodes.ToArray());
             this.Close();
         }
