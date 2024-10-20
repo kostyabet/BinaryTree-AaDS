@@ -10,6 +10,7 @@ namespace Tree
             RAB_res_label.Text = "RAB: ";
             ARB_res_label.Text = "ARB: ";
             ABR_res_label.Text = "ABR: ";
+            threadingInfo.Text = "Узлы имеющие прошивку: ";
         }
 
         private void createTree_Click(object sender, EventArgs e)
@@ -52,6 +53,7 @@ namespace Tree
         private void button2_Click(object sender, EventArgs e)
         {
             tree.threadTree();
+            threadingInfo.Text = "Узлы имеющие прошивку: " + tree.threadedNodes;
             panel.Invalidate();
         }
 

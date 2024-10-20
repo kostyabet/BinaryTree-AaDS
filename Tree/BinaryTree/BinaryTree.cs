@@ -7,10 +7,13 @@ public class BinaryTree
     public string ABR_result { get; set; }
     public string ARB_result { get; set; }
     public string RAB_result { get; set; }
+    public string threadedNodes { get; set; }
+    public int X { get; set; }
     public BinaryTree() {
         ABR_result = string.Empty;
         ARB_result = string.Empty;
         RAB_result = string.Empty;
+        threadedNodes = string.Empty;
     }
     public void Insert(int value)
 	{
@@ -194,6 +197,8 @@ public class BinaryTree
 
     public void threadTree()
     {
+        threadedNodes = string.Empty;
+        
         Tree.TreeNode.TreeNode? tempNode = null;
         ARBtemp(_root);
         void ARBtemp(Tree.TreeNode.TreeNode? node)
@@ -203,20 +208,28 @@ public class BinaryTree
                 return;
             }
             ARBtemp(node.Left);
-            if (node.Right == null)
+            if (tempNode != null)
             {
-                tempNode = node;
-            }
-            else if (tempNode != null) {
                 tempNode.isThread = true;
                 tempNode.threadLink = node;
+                tempNode = null;
+            }
+            if (node.Right == null) 
+            {
+                threadedNodes += " " + node.Value;
+                tempNode = node;
             }
             ARBtemp(node.Right);
         }
+        if (tempNode != null)
+        {
+            tempNode.isThread = true;
+            tempNode.threadLink = _root;
+        }
     }
-
     public void DrawTree(Graphics g, int x)
     {
+        X = x;
         DrawNodeTree(g, _root, x, 20, 210);
     }
 
@@ -236,6 +249,82 @@ public class BinaryTree
             g.DrawLine(node.borderColor, x + 15, y + 30, x + offset + 15, y + 70);
             DrawNodeTree(g, node.Right, x + offset, y + 70, offset / 2);
         }
+        else if (node.isThread)
+        {
+            int[] coords = NodeCoords(node.threadLink.Value, X, 20, 210);
+            g.DrawLine(node.borderColor, x + 15, y + 30, coords[0], coords[1]);
+        }
+    }
+    private int[] NodeCoords(int value, int x, int y, int offset)
+    {
+        int[] resCoords = { x, y };
+        bool state = false;
+        Search(_root, resCoords[0], resCoords[1], offset);
+        void Search(Tree.TreeNode.TreeNode node, int x, int y, int offset)
+        {   
+            if (node == null) return;
+            if (state || node.Value == value)
+            {
+                if (state == false)
+                {
+                    resCoords[0] = x;
+                    resCoords[1] = y;
+                }
+                state = true;
+                return;
+            }
+            if (node.Left != null && !state)
+            {
+                if (state || node.Value == value)
+                {
+                    if (state == false)
+                    {
+                        resCoords[0] = x;
+                        resCoords[1] = y;
+                    }
+                    state = true;
+                    return;
+                }
+                Search(node.Left, x - offset, y + 70, offset / 2);
+            }
+            if (state || node.Value == value)
+            {
+                if (state == false)
+                {
+                    resCoords[0] = x;
+                    resCoords[1] = y;
+                }
+                state = true;
+                return;
+            }
+            if (node.Right != null && !state) 
+            {
+                if (state || node.Value == value)
+                {
+                    if (state == false)
+                    {
+                        resCoords[0] = x;
+                        resCoords[1] = y;
+                    }
+                    state = true;
+                    return;
+                }
+                Search(node.Right, x + offset, y + 70, offset / 2);
+            }
+            if (state || node.Value == value)
+            {
+                if (state == false)
+                {
+                    resCoords[0] = x;
+                    resCoords[1] = y;
+                }
+                state = true;
+                return;
+            }
+        }
+        resCoords[0] += 15;
+        resCoords[1] += 30;
+        return resCoords;
     }
     private void InsertValue(int value, Tree.TreeNode.TreeNode node)
     {
