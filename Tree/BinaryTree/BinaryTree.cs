@@ -265,6 +265,7 @@ public class BinaryTree
     }
     public void ResetThreadStatus()
     {
+        VertOffset = 3;
         ResetThread(_root);
         void ResetThread(Tree.TreeNode.TreeNode? node)
         {

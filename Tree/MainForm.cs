@@ -28,6 +28,7 @@ namespace Tree
 
         private async void RABbutton_Click(object sender, EventArgs e)
         {
+            tree.ResetThreadStatus();
             tree.RAB_result = string.Empty;
             await tree.RAB(tree._root, panel);
             RAB_res_label.Text = "RAB: " + tree.RAB_result;
@@ -36,6 +37,7 @@ namespace Tree
 
         private async void ARBbutton_Click(object sender, EventArgs e)
         {
+            tree.ResetThreadStatus();
             tree.ARB_result = string.Empty;
             await tree.ARB(tree._root, panel);
             ARB_res_label.Text = "ARB: " + tree.ARB_result;
@@ -44,6 +46,7 @@ namespace Tree
 
         private async void ABRbutton_Click(object sender, EventArgs e)
         {
+            tree.ResetThreadStatus();
             tree.ABR_result = string.Empty;
             await tree.ABR(tree._root, panel);
             ABR_res_label.Text = "ABR: " + tree.ABR_result;
